@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "#Codes for example and exercise of Chapter 1 of Millar.\nlibrary(\"ggplot2\")\nlibrary(\"Bhat\")\n\n#Binomial Example\nnloglhood=function(p){\n  return(-(log(choose(100,10))+10*log(p)+90*log(1-p)))\n}\n\n#Visualizing the log-likelihood\nx = seq(0.01,0.99,0.01)\ny = nloglhood(x)\ndata = data.frame(x,y)\np1 = ggplot(data, aes(y =y, x = x)) + geom_line(color = \"dodgerblue3\") + theme_bw() + labs(list(x =  \"p\", y = \"-L(p)\"))\n\n#Minimize the negative log-likelihood\nbinom.fit=optim(0.5,nloglhood,lower=0.0001,upper=0.9999, hessian=TRUE)\n\n#The MLE\nphat=binom.fit$par \n\n#Variance is inverse hessian\nphat.var=1/binom.fit$hessian \n\n#Calculate 95% Wald CI\nWCI = phat+c(-1,1)*qnorm(0.975)*sqrt(phat.var)\n\n#Calculate LR based CI\n#Set up list for input into plkchi function. The first argument to the profile likelihood function plkhci is a list with\n#elements giving the parameters of nloglhood, the MLE, and lower and\n#upper bounds of the parameter space.\ncontrol.list=list(label=\"p\",est=phat,low=0,upp=1)\nplkhci(control.list,nloglhood,\"p\")\n\n#Poisson Exercise\nnlogl.poisson = function(lambda)\n{\n  return(-(-lambda+3*log(lambda)-log(6)))\n}\nx = seq(0.1,15,0.01)\ny = nlogl.poisson(x)\ndata = data.frame(x,y)\np2 = ggplot(data, aes(y =y, x = x)) + geom_line(color = \"dodgerblue3\") + theme_bw() + labs(list(x =  expression(lambda), y = \"-ve log-likelihood\"))\n\n#Minimize the negative log-likelihood\nbinom.fit=optim(1.0 ,nlogl.poisson,lower=0.0001,upper=15, hessian=TRUE)\n\n#The MLE\nlambdahat=binom.fit$par \n\n#Variance is inverse hessian\nlambdahat.var=1/binom.fit$hessian \n\n#Calculate 95% Wald CI\nWCI.poisson = lambdahat+c(-1,1)*qnorm(0.975)*sqrt(phat.var)\n\n#Calculate LR based CI\n#Set up list for input into plkchi function. The first argument to the profile likelihood function plkhci is a list with\n#elements giving the parameters of nloglhood, the MLE, and lower and\n#upper bounds of the parameter space.\ncontrol.list=list(label=\"lambda\",est=lambdahat,low=0,upp=25)\nplkhci(control.list,nlogl.poisson,\"lambda\")",
+    "created" : 1487565577549.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4096071009",
+    "id" : "74F83C0E",
+    "lastKnownWriteTime" : 1487568930,
+    "last_content_update" : 1487568930101,
+    "path" : "~/Documents/Work/R Projects/MLE/Chapter1.R",
+    "project_path" : "Chapter1.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
